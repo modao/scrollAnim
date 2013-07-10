@@ -1,0 +1,14 @@
+{
+    "name": "scrollAnim",
+    "version": "1.0",
+    "desc": "滚动动画效果小组件",
+    "cover": "http://img02.taobaocdn.com/tps/i2/T1dlXjFhheXXXo8e3K-859-859.png",
+    "tag":"",
+    "author": {
+        "name": "mohen",
+        "email": "yongxin.myx@alibaba-inc.com",
+        "page": "https://github.com/modao"
+    },
+    "type": "kissy-gallery",
+    "type-url": "http://gallery.kissyui.com/guide"
+}

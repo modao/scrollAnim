@@ -1,4 +1,13 @@
-scrollAnim
-==========
+## scrollAnim
+* 作者：莫痕<yongxin.myx@alibaba-inc.com>
+* 版本：1.0
+* 教程：[http://gallery.kissyui.com/scrollAnim/1.0/guide/index.html](http://gallery.kissyui.com/scrollAnim/1.0/guide/index.html)
+* demo：[http://gallery.kissyui.com/scrollAnim/1.0/demo/index.html](http://gallery.kissyui.com/scrollAnim/1.0/demo/index.html)
 
-This is a kissy gallery called scrollAnim for the scroll triggered animate.
+## changelog
+
+### V1.0
+
+
+
+
