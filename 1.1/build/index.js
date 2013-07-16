@@ -9,7 +9,7 @@ gallery/scrollAnim/1.0/index
  * @author mohen<yongxin.myx@alibaba-inc.com>
  * @module scrollAnim
  **/
-KISSY.add('gallery/scrollAnim/1.0/index',function (S, Base) {
+KISSY.add('gallery/scrollAnim/1.1/index',function (S, Base) {
     var DOM = S.DOM, Event = S.Event;
     var AllSets=[], pre_scroll_fn;
     /**
