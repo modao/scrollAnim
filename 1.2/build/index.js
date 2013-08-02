@@ -1,9 +1,15 @@
+/*
+combined files : 
+
+gallery/scrollAnim/1.2/index
+
+*/
 /**
  * @fileoverview 
  * @author mohen<yongxin.myx@alibaba-inc.com>
  * @module scrollAnim
  **/
-KISSY.add('gallery/scrollAnim/1.1/index', function (S, Base) {
+KISSY.add('gallery/scrollAnim/1.2/index', function (S, Base) {
     var DOM = S.DOM, Event = S.Event;
     var AllSets=[], pre_scroll_fn;
     /**
@@ -99,13 +105,15 @@ KISSY.add('gallery/scrollAnim/1.1/index', function (S, Base) {
                   start_value: 期望elem的attr属性变化的起始值
                   end_value: 期望elem的attr属性变化的最终值
                   isCallbackLoop: 设置回调函数是否在页面中仅执行一次（false），或者是当页面回滚再次滚下时再次触发（true），默认为true
+                  isAnimLoop: 设置滚动动画是否可以重复执行，当设置为false时则在回调函数触发之后滚动动画将不再执行，默认为true。
 
           例：config= {
                 start_scroll: 200,
                 end_scroll: 1000,
                 start_value: -100,
                 end_value: 300,
-                isCallbackLoop: false
+                isCallbackLoop: false,
+                isAnimLoop: false
           };
         *Note：调用方法：S.Event.on(window, 'scroll', scrollAnim.scrollLineAnim(...));
         */
@@ -133,6 +141,9 @@ KISSY.add('gallery/scrollAnim/1.1/index', function (S, Base) {
                 if(!config.hasOwnProperty('isCallbackLoop')){
                     config.isCallbackLoop=true;
                 }
+                if(!config.hasOwnProperty('isAnimLoop')){
+                    config.isAnimLoop=true;
+                }
             }
 
             if(callback!=undefined && !S.isFunction(callback)){
@@ -145,12 +156,13 @@ KISSY.add('gallery/scrollAnim/1.1/index', function (S, Base) {
             input_data.attr=attr;
             input_data.config=config;
             input_data.callback=callback;
+            //lock属性为决定回调函数是否重复执行的锁
             input_data.lock=false;
+            //all_lock属性为决定整个动画是否能够一直重复执行，还是在回调函数触发后就不再执行的锁
+            input_data.all_lock=false;
             AllSets.push(input_data);
 
-            //为保证所有页面上调用该方法的元素均能在一个scroll事件的回调函数中，需要先将之前的scroll事件绑定
-            //销毁掉，再重新全部绑定
-            Event.detach(window, 'scroll', pre_scroll_fn);
+            //要保证所有页面上调用该方法的元素均能在一个scroll事件的回调函数中，否则可能会有效率问题
 
             Event.on(window, 'scroll', pre_scroll_fn=function(ev){
                 var scrollTop=DOM.scrollTop(window);
@@ -160,41 +172,52 @@ KISSY.add('gallery/scrollAnim/1.1/index', function (S, Base) {
                 for(count=0;count<AllSets.length;count++){
                     attr_value=undefined;
                     first_letter=undefined;
-                    if(scrollTop>=AllSets[count].config.start_scroll && scrollTop<=AllSets[count].config.end_scroll){
-                        attr_value=DOM.css(AllSets[count].elem, AllSets[count].attr);
+                    if(!AllSets[count].all_lock){
+                        if(scrollTop>=AllSets[count].config.start_scroll && scrollTop<=AllSets[count].config.end_scroll){
+                            attr_value=DOM.css(AllSets[count].elem, AllSets[count].attr);
 
-                        for(i=0; i<attr_value.length; i++){
-                            if(!(attr_value.substr(i,1)>='0' && attr_value.substr(i,1)<='9') && attr_value.substr(i,1)!='-' && attr_value.substr(i,1)!='.'){
-                                first_letter=attr_value.substr(i,1);
-                                break;
+                            for(i=0; i<attr_value.length; i++){
+                                if(!(attr_value.substr(i,1)>='0' && attr_value.substr(i,1)<='9') && attr_value.substr(i,1)!='-' && attr_value.substr(i,1)!='.'){
+                                    first_letter=attr_value.substr(i,1);
+                                    break;
+                                }
                             }
-                        }
 
-                        if(S.isUndefined(first_letter)){
-                            //此时该属性为一个数值且没有单位的情况
-                            DOM.css(AllSets[count].elem, AllSets[count].attr, AllSets[count].config.start_value+(scrollTop-AllSets[count].config.start_scroll)*((AllSets[count].config.end_value-AllSets[count].config.start_value)/(AllSets[count].config.end_scroll-AllSets[count].config.start_scroll)));
-                        }else{
-                            //此时该属性为一个数值+一个单位或多个数值+单位且仅改变第一个元素值的情况
-                            //这是绝对距离的算法
-                            DOM.css(AllSets[count].elem, AllSets[count].attr, AllSets[count].config.start_value+(scrollTop-AllSets[count].config.start_scroll)*((AllSets[count].config.end_value-AllSets[count].config.start_value)/(AllSets[count].config.end_scroll-AllSets[count].config.start_scroll))+attr_value.substring(attr_value.indexOf(first_letter)));
-                            attr_value=attr_value.substring(0,attr_value.indexOf(first_letter));
-                        }
-                        //当元素运动到end_value或比end_value小整个变化范围的5%范围内时，执行回调函数callback，lock保证回调函数只执行一次
-                        if(Math.abs(attr_value-AllSets[count].config.end_value)<Math.abs((AllSets[count].config.end_value-AllSets[count].config.start_value)*0.05)){
-                            if(!AllSets[count].lock){
+                            if(S.isUndefined(first_letter)){
+                                //此时该属性为一个数值且没有单位的情况
+                                DOM.css(AllSets[count].elem, AllSets[count].attr, AllSets[count].config.start_value+(scrollTop-AllSets[count].config.start_scroll)*((AllSets[count].config.end_value-AllSets[count].config.start_value)/(AllSets[count].config.end_scroll-AllSets[count].config.start_scroll)));
+                            }else{
+                                //此时该属性为一个数值+一个单位或多个数值+单位且仅改变第一个元素值的情况
+                                //这是绝对距离的算法
+                                DOM.css(AllSets[count].elem, AllSets[count].attr, AllSets[count].config.start_value+(scrollTop-AllSets[count].config.start_scroll)*((AllSets[count].config.end_value-AllSets[count].config.start_value)/(AllSets[count].config.end_scroll-AllSets[count].config.start_scroll))+attr_value.substring(attr_value.indexOf(first_letter)));
+                                attr_value=attr_value.substring(0,attr_value.indexOf(first_letter));
+                            }
+                            //当元素运动到end_value或比end_value小整个变化范围的5%范围内时，执行回调函数callback，lock保证回调函数只执行一次
+                            if(Math.abs(attr_value-AllSets[count].config.end_value)<Math.abs((AllSets[count].config.end_value-AllSets[count].config.start_value)*0.01)){
+                                if(!AllSets[count].lock){
+                                    AllSets[count].callback && AllSets[count].callback();
+                                    //这里是当设置isAnimLoop属性为true时，在回调函数执行后，all_lock属性上锁
+                                    if(!AllSets[count].config.isAnimLoop){
+                                        AllSets[count].all_lock=true;
+                                    }
+                                    AllSets[count].lock=true;
+                                }
+                            }else{
+                                //根据用户输入是否允许重复回调函数的设置来判断
+                                if(AllSets[count].config.isCallbackLoop){
+                                    AllSets[count].lock=false;
+                                }
+                            }
+                        }else if(scrollTop>AllSets[count].config.end_scroll && AllSets[count].lock==false){
                                 AllSets[count].callback && AllSets[count].callback();
+                                //这里是当设置isAnimLoop属性为true时，在回调函数执行后，all_lock属性上锁
+                                if(!AllSets[count].config.isAnimLoop){
+                                    AllSets[count].all_lock=true;
+                                }
                                 AllSets[count].lock=true;
-                            }
-                        }else{
-                            //根据用户输入是否允许重复回调函数的设置来判断
-                            if(AllSets[count].config.isCallbackLoop){
-                                AllSets[count].lock=false;
-                            }
                         }
-                    }else if(scrollTop>AllSets[count].config.end_scroll && AllSets[count].lock==false){
-                            AllSets[count].callback && AllSets[count].callback();
-                            AllSets[count].lock=true;
                     }
+
                 }
             });
         }
