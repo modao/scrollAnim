@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>scrollAnim的demo</title>
+    <style type="text/css">
+        .pic {
+            width: 165px;
+            height: 67px;
+            background: url(http://a.tbcdn.cn/s/kissy/logo.png) no-repeat;
+            position: absolute;
+            top: 400px;
+            opacity: 1;
+            left: 200px;
+        }
+
+        p {
+            height: 30px;
+        }
+    </style>
+    <script src="http://a.tbcdn.cn/s/kissy/1.3.0/kissy-min.js" charset="utf-8"></script>
+</head>
+<body>
+<h2>scrollAnim的demo</h2>
+<hr />
+<h3>向下滚动页面以查看效果</h3>
+<div id="J_move1" class="pic" alt="Kissy Logo" title="Kissy Logo"></div>
+<div id="J_move2" class="pic" alt="Kissy Logo" title="Kissy Logo"></div>
+<div id="J_move3" class="pic" alt="Kissy Logo" title="Kissy Logo"></div>
+
+
+<!-- 这里是为了使浏览器出现滚动条 -->
+<p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+<p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+<p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+<script>
+    var S = KISSY, Event = S.Event, DOM = S.DOM;
+    if (S.Config.debug) {
+        var srcPath = "../../../";
+        S.config({
+            packages:[
+                {
+                    name:"gallery",
+                    path:srcPath,
+                    charset:"utf-8",
+                    ignorePackageNameInUri:true
+                }
+            ]
+        });
+    }
+
+
+
+    S.use('gallery/scrollAnim/1.3/index', function (S, ScrollAnim) {
+        var scrollAnim = new ScrollAnim();
+        scrollAnim.smoothWheelScroll(1.5);
+        scrollAnim.smoothKeydownScroll(1.5);
+        scrollAnim.scrollLineAnim('#J_move1', 'left', {
+            start_scroll: 0,
+            end_scroll: 500,
+            start_value: 200,
+            end_value: 600
+        }, function(){alert('Callback function binds on J_move1 is triggered.')});
+        scrollAnim.scrollLineAnim('#J_move1', 'top', {
+            start_scroll: 0,
+            end_scroll: 500,
+            start_value: 400,
+            end_value: 600
+        });
+        scrollAnim.scrollLineAnim('#J_move2', 'top', {
+            start_scroll: 0,
+            end_scroll: 200,
+            start_value: 400,
+            end_value: 1000,
+            isCallbackLoop: false,
+            isMidCallLoop: true,
+            midCall: {
+                600: function(){DOM.css('#J_move2', 'opacity', '0.4');},
+                800: function(){DOM.css('#J_move2', 'background-color', '#333');}
+            }
+        }, function(){alert('Callback function binds on J_move2 is triggered.')});
+        scrollAnim.scrollLineAnim('#J_move3', 'opacity', {
+            start_scroll: 0,
+            end_scroll: 300,
+            start_value: 1,
+            end_value: 0,
+            isAnimLoop: false
+        });
+
+    });
+
+</script>
+</body>
+</html>
