@@ -35,7 +35,7 @@ scrollAnim是一个处理页面滚动时元素的动画效果的gallery组件，
     });
 
 ## Demo
-    Demo地址:[http://gallery.kissyui.com/scrollAnim/1.4/demo/index.html](http://gallery.kissyui.com/scrollAnim/1.3/demo/index.html)
+    Demo地址:[http://gallery.kissyui.com/scrollAnim/1.4/demo/index.html](http://gallery.kissyui.com/scrollAnim/1.4/demo/index.html)
 
 
 ## API说明
