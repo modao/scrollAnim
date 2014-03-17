@@ -75,8 +75,8 @@
             isCallbackLoop: false,
             isMidCallLoop: true,
             midCall: {
-                600: function(){DOM.css('#J_move2', 'opacity', '0.4');},
-                800: function(){DOM.css('#J_move2', 'background-color', '#333');}
+                600: function(){document.getElementById('J_move2').style.opacity=0.4;},
+                800: function(){document.getElementById('J_move2').style.backgroundColor='#333';}
             }
         }, function(){alert('Callback function binds on J_move2 is triggered.')});
         scrollAnim.scrollLineAnim('#J_move3', 'opacity', {
