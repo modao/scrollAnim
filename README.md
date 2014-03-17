@@ -1,8 +1,8 @@
 ## scrollAnim
 * 作者：莫痕<yongxin.myx@alibaba-inc.com>  
-* 版本：1.3  
-* 教程：[http://gallery.kissyui.com/scrollAnim/1.3/guide/index.html](http://gallery.kissyui.com/scrollAnim/1.3/guide/index.html)  
-* demo：[http://gallery.kissyui.com/scrollAnim/1.3/demo/index.html](http://gallery.kissyui.com/scrollAnim/1.3/demo/index.html)  
+* 版本：1.4
+* 教程：[http://gallery.kissyui.com/scrollAnim/1.4/guide/index.html](http://gallery.kissyui.com/scrollAnim/1.4/guide/index.html)
+* demo：[http://gallery.kissyui.com/scrollAnim/1.4/demo/index.html](http://gallery.kissyui.com/scrollAnim/1.4/demo/index.html)
 
 ## changelog
 
@@ -21,3 +21,5 @@
 新增功能：  
 增加一个config配置项midCall，该配置项允许设定在属性值达到某一值时触发后面相应的函数  
 新增isMidCallLoop配置项，该配置项决定配置的midCall中的函数能否重复触发
+### V1.4
+增加对KISSY1.3.0+的支持
